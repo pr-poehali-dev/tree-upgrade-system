@@ -4,6 +4,7 @@ import GameOverlays from '@/components/game/GameOverlays';
 import GameHeader from '@/components/game/GameHeader';
 import BottomNav, { type Tab } from '@/components/game/BottomNav';
 import { HomeTab, AchievementsTab, ShopTab, InventoryTab, SettingsTab } from '@/components/game/TabScreens';
+import { useGameAudio } from '@/hooks/useGameAudio';
 
 interface Particle {
   id: number;
@@ -30,6 +31,8 @@ export default function Index() {
   const particleId = useRef(0);
   const saveTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const { playClick, playBuy, playAchievement, startMusic } = useGameAudio(state.settings.sound);
 
   useEffect(() => {
     const loaded = loadGameState() as GameState & { offlineBonus?: number };
@@ -88,10 +91,11 @@ export default function Index() {
 
   useEffect(() => {
     if (newAchievement) {
+      playAchievement();
       const t = setTimeout(() => setNewAchievement(null), 3000);
       return () => clearTimeout(t);
     }
-  }, [newAchievement]);
+  }, [newAchievement, playAchievement]);
 
   const spawnParticles = useCallback((x: number, y: number) => {
     const emojis = ['🍃', '🍂', '🌿', '✨', '💚'];
@@ -122,13 +126,15 @@ export default function Index() {
     spawnFloatText(cx, cy - 20, `+${formatLeaves(state.leavesPerClick)} 🍃`);
     setTreeShake(true);
     setTimeout(() => setTreeShake(false), 400);
+    playClick();
+    startMusic();
     setState(prev => ({
       ...prev,
       leaves: prev.leaves + prev.leavesPerClick,
       totalLeavesEarned: prev.totalLeavesEarned + prev.leavesPerClick,
       totalClicks: prev.totalClicks + 1,
     }));
-  }, [state.leavesPerClick, spawnParticles, spawnFloatText]);
+  }, [state.leavesPerClick, spawnParticles, spawnFloatText, playClick, startMusic]);
 
   const handleBuy = useCallback((itemId: string) => {
     setState(prev => {
@@ -136,6 +142,7 @@ export default function Index() {
       if (!item) return prev;
       const price = getItemPrice(item);
       if (prev.leaves < price) return prev;
+      playBuy();
       const shopItems = prev.shopItems.map(i =>
         i.id === itemId ? { ...i, owned: i.owned + 1 } : i
       );
@@ -143,7 +150,7 @@ export default function Index() {
       const lpc = 1 + shopItems.reduce((acc, i) => acc + i.leafPerClick * i.owned, 0);
       return { ...prev, leaves: prev.leaves - price, shopItems, leavesPerSecond: lps, leavesPerClick: lpc };
     });
-  }, []);
+  }, [playBuy]);
 
   return (
     <div className="min-h-screen flex flex-col max-w-md mx-auto relative overflow-hidden" style={{ background: '#E8F5E9' }}>
