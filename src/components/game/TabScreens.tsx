@@ -1,7 +1,7 @@
 import { formatLeaves, getItemPrice } from '@/lib/gameStore';
 import type { GameState } from '@/lib/gameStore';
 
-const SQUIRREL_IMG = 'https://cdn.poehali.dev/projects/dc25b253-70be-4403-8236-7e436e54997b/files/9b0a6982-83be-48cf-b747-0a9a9a022200.jpg';
+const TREE_IMG = 'https://cdn.poehali.dev/projects/dc25b253-70be-4403-8236-7e436e54997b/files/623086bb-4016-4cd1-b5ce-439f13a66fd3.jpg';
 const BG_IMG = 'https://cdn.poehali.dev/projects/dc25b253-70be-4403-8236-7e436e54997b/files/2216d4dd-16e0-4d38-a8b7-11b76380503a.jpg';
 
 export function HomeTab({ state, treeShake, onTreeClick }: {
@@ -28,24 +28,23 @@ export function HomeTab({ state, treeShake, onTreeClick }: {
         </div>
       </div>
 
-      <div className="flex flex-col items-center -mt-16 pb-4 px-4">
+      <div className="flex flex-col items-center -mt-20 pb-4 px-4">
         <div
           onClick={onTreeClick}
           className={`tree-btn relative cursor-pointer select-none ${treeShake ? 'animate-tree-shake' : ''}`}
-          style={{ width: 150, height: 150 }}
+          style={{ width: 180, height: 180 }}
         >
           <img
-            src={SQUIRREL_IMG}
-            alt="Белочка"
-            className="w-full h-full object-contain rounded-full border-4 border-white shadow-xl"
-            style={{ background: 'radial-gradient(circle, #E8F5E9, #C8E6C9)' }}
+            src={TREE_IMG}
+            alt="Дерево"
+            className="w-full h-full object-contain drop-shadow-xl"
           />
           <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full w-9 h-9 flex items-center justify-center text-lg border-2 border-white shadow">
             🍃
           </div>
         </div>
 
-        <p className="text-green-600 font-bold text-sm mt-3 mb-1 font-ui">Нажми на белочку!</p>
+        <p className="text-green-600 font-bold text-sm mt-2 mb-1 font-ui">Нажми на дерево!</p>
         <p className="text-green-400 text-xs font-ui">+{formatLeaves(state.leavesPerClick)} 🍃 за клик</p>
 
         <div className="w-full mt-5 grid grid-cols-3 gap-3">
