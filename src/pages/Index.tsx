@@ -28,6 +28,7 @@ export default function Index() {
   const [treeShake, setTreeShake] = useState(false);
   const [offlineModal, setOfflineModal] = useState<number | null>(null);
   const [newAchievement, setNewAchievement] = useState<string | null>(null);
+  const [secretLeaf, setSecretLeaf] = useState<{ x: number; y: number } | null>(null);
   const particleId = useRef(0);
   const saveTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const tickTimer = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -128,6 +129,11 @@ export default function Index() {
     setTimeout(() => setTreeShake(false), 400);
     playClick();
     startMusic();
+
+    if (Math.random() < 0.001) {
+      setSecretLeaf({ x: cx, y: cy });
+    }
+
     setState(prev => ({
       ...prev,
       leaves: prev.leaves + prev.leavesPerClick,
@@ -160,6 +166,8 @@ export default function Index() {
         newAchievement={newAchievement}
         offlineModal={offlineModal}
         onCloseOfflineModal={() => setOfflineModal(null)}
+        secretLeaf={secretLeaf}
+        onCloseSecretLeaf={() => setSecretLeaf(null)}
       />
 
       <GameHeader state={state} />
